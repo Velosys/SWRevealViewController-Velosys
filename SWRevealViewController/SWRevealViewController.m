@@ -196,8 +196,23 @@ static CGFloat scaledValue( CGFloat v1, CGFloat min2, CGFloat max2, CGFloat min1
     xLocation = [self _adjustedDragLocationForLocation:xLocation];
     [self _layoutRearViewsForLocation:xLocation];
     
+    CGFloat revealWidth, revealOverdraw;
+    [_c _getRevealWidth:&revealWidth revealOverDraw:&revealOverdraw forSymetry:(xLocation<0 ? -1 : 1)];
+    
+    CGFloat transitionPercentage = (xLocation) / revealWidth;
     CGRect frame = CGRectMake(xLocation, 0.0f, bounds.size.width, bounds.size.height);
+    _frontView.transform = CGAffineTransformIdentity;
     _frontView.frame = [self hierarchycalFrameAdjustment:frame];
+    
+    if( xLocation > 0.0 )
+    {
+        CGFloat scale = 1.0 - transitionPercentage * 0.4;
+        
+        CGFloat adjustedWidthLoss = (1.0 - scale) * _frontView.bounds.size.width;
+        CGAffineTransform transform = CGAffineTransformMakeScale(scale, scale);
+        transform = CGAffineTransformTranslate(transform, -adjustedWidthLoss, 0.0);
+        _frontView.transform = transform;
+    }
 }
 
 
@@ -217,7 +232,16 @@ static CGFloat scaledValue( CGFloat v1, CGFloat min2, CGFloat max2, CGFloat min1
     
     // set front view frame
     CGRect frame = CGRectMake(xLocation, 0.0f, bounds.size.width, bounds.size.height);
+    _frontView.transform = CGAffineTransformIdentity;
     _frontView.frame = [self hierarchycalFrameAdjustment:frame];
+    
+    if( _frontView.frame.origin.x > 0.0 )
+    {
+        CGFloat adjustedWidthLoss = 0.4 * _frontView.bounds.size.width;
+        CGAffineTransform transform = CGAffineTransformMakeScale(0.6, 0.6);
+        transform = CGAffineTransformTranslate(transform, -adjustedWidthLoss, 0.0);
+        _frontView.transform = transform;
+    }
     
     // setup front view shadow path if needed (front view loaded and not removed)
     UIViewController *frontViewController = _c.frontViewController;

@@ -204,14 +204,17 @@ static CGFloat scaledValue( CGFloat v1, CGFloat min2, CGFloat max2, CGFloat min1
     _frontView.transform = CGAffineTransformIdentity;
     _frontView.frame = [self hierarchycalFrameAdjustment:frame];
     
-    if( xLocation > 0.0 )
+    if( [[[UIDevice currentDevice] systemVersion] compare:@"8.0.0" options:NSNumericSearch] != NSOrderedAscending )
     {
-        CGFloat scale = 1.0 - transitionPercentage * 0.4;
-        
-        CGFloat adjustedWidthLoss = (1.0 - scale) * _frontView.bounds.size.width;
-        CGAffineTransform transform = CGAffineTransformMakeScale(scale, scale);
-        transform = CGAffineTransformTranslate(transform, -adjustedWidthLoss, 0.0);
-        _frontView.transform = transform;
+        if( xLocation > 0.0 )
+        {
+            CGFloat scale = 1.0 - transitionPercentage * 0.4;
+            
+            CGFloat adjustedWidthLoss = (1.0 - scale) * _frontView.bounds.size.width;
+            CGAffineTransform transform = CGAffineTransformMakeScale(scale, scale);
+            transform = CGAffineTransformTranslate(transform, -adjustedWidthLoss, 0.0);
+            _frontView.transform = transform;
+        }
     }
 }
 
@@ -235,12 +238,15 @@ static CGFloat scaledValue( CGFloat v1, CGFloat min2, CGFloat max2, CGFloat min1
     _frontView.transform = CGAffineTransformIdentity;
     _frontView.frame = [self hierarchycalFrameAdjustment:frame];
     
-    if( _frontView.frame.origin.x > 0.0 )
+    if( [[[UIDevice currentDevice] systemVersion] compare:@"8.0.0" options:NSNumericSearch] != NSOrderedAscending )
     {
-        CGFloat adjustedWidthLoss = 0.4 * _frontView.bounds.size.width;
-        CGAffineTransform transform = CGAffineTransformMakeScale(0.6, 0.6);
-        transform = CGAffineTransformTranslate(transform, -adjustedWidthLoss, 0.0);
-        _frontView.transform = transform;
+        if( _frontView.frame.origin.x > 0.0 )
+        {
+            CGFloat adjustedWidthLoss = 0.4 * _frontView.bounds.size.width;
+            CGAffineTransform transform = CGAffineTransformMakeScale(0.6, 0.6);
+            transform = CGAffineTransformTranslate(transform, -adjustedWidthLoss, 0.0);
+            _frontView.transform = transform;
+        }
     }
     
     // setup front view shadow path if needed (front view loaded and not removed)
